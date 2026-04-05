@@ -4,7 +4,7 @@ import allure
 from selenium.webdriver.support import expected_conditions as EC
 
 from pages.base_page import BasePage
-from pages.locators import cart_locators as  loc
+from pages.locators import cart_locators as loc
 
 
 class CartPage(BasePage):

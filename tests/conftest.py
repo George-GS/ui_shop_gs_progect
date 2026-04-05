@@ -4,7 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.chrome.options import Options
 
-from pages.product_desk_page import ProductDeskPage
+from pages.folder_product_desk_page import FolderProductDeskPage
 from pages.cart_page import CartPage
 from pages.cart_modal_window import CartModalWindow
 
@@ -18,8 +18,8 @@ def driver():
 
 
 @pytest.fixture()
-def product_desk_page(driver):
-    return ProductDeskPage(driver)
+def folder_product_desk_page(driver):
+    return FolderProductDeskPage(driver)
 
 
 @pytest.fixture()

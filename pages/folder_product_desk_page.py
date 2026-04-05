@@ -5,10 +5,10 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 
 from pages.base_page import BasePage
-from pages.locators import product_desk_locators as loc
+from pages.locators import folder_product_desk_locators as loc
 
 
-class ProductDeskPage(BasePage):
+class FolderProductDeskPage(BasePage):
     PAGE_URL = '/category/desks-1'
 
     def products_displayed_on_page(self):
