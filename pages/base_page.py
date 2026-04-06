@@ -1,5 +1,6 @@
 import logging
 import allure
+
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
@@ -24,13 +25,3 @@ class BasePage:
 
     def find_all(self, locator: tuple):
         return self.driver.find_elements(*locator)
-
-
-
-
-
-
-
-
-
-
