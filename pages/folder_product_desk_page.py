@@ -69,8 +69,20 @@ class FolderProductDeskPage(BasePage):
             checkbox_filter.click()
 
     def add_to_cart_hover(self):
-        logging.info('Наводим курсор на товар и добавляем в корзину')
-        with allure.step('Наводим курсор на товар и добавляем в корзину'):
-            product_table = self.wait.until(EC.visibility_of_element_located(loc.product_table))
+        logging.info('Наводим курсор на первый отображаемый товар и добавляем в корзину')
+        with allure.step('Наводим курсор на первый отображаемый товар и добавляем в корзину'):
+            product_table = self.wait.until(EC.visibility_of_element_located(loc.name_prod_one_loc))
+            self.product_name = self.find_all(loc.name_prod_one_loc)[0].get_attribute('content')
             self.action.move_to_element(product_table).perform()
             self.wait.until(EC.element_to_be_clickable(loc.cart_btn)).click()
+
+    def get_name_first_product(self):
+        logging.info('Получаем имя первого товара в разделе')
+        name_first_prod = self.find_all(loc.name_prod_one_loc)[0].get_attribute('content')
+        return name_first_prod
+
+    def open_product_page(self):
+        logging.info('Кликаем на первый отображаемый товар для открытия страницы товара')
+        with allure.step('Кликаем на первый отображаемый товар для открытия страницы товара'):
+            first_prod = self.find_all(loc.name_prod_one_loc)[0]
+            first_prod.click()

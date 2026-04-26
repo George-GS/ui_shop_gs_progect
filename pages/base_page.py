@@ -14,6 +14,8 @@ class BasePage:
         self.driver = driver
         self.wait = WebDriverWait(driver, 10)
         self.action = ActionChains(driver)
+        self.product_name = None
+
 
     def open_page(self):
         logging.info(f'Переходим на страницу {self.BASE_URL}{self.PAGE_URL}')
