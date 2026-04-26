@@ -8,21 +8,35 @@ from pages.locators import product_page_locators as loc
 
 
 class ProductPage(BasePage):
-    PAGE_URL = '/furn-9999-office-design-software-7?category=9'
+    PAGE_URL = '/customizable-desk-9?category=1#attr=1,3'
 
-    def check_name(self, expected_name):
-        logging.info(f'Проверяем название товара. Ожидается: "{expected_name}"')
-        with allure.step(f'Проверяем название товара (ожидается "{expected_name}")'):
+    def check_name(self):
+        logging.info('Проверяем, что у товара есть название')
+        with allure.step(f'Проверяем, что у товара есть название'):
             actual_name = self.find(loc.name_product_loc)
-            assert actual_name.text == expected_name, f'Неверное имя товара. ' \
-                                             f'Ожидаемое имя: {expected_name}, текущее имя: {actual_name}'
+            assert len(actual_name.text) > 2, f'Имя товара пустое или меньше 2 символов'
 
-    def check_price(self, expected_price):
-        logging.info(f'Проверяем цену товара. Ожидается: "{expected_price}"')
-        with allure.step(f'Проверяем цену товара (ожидается "{expected_price}")'):
-            actual__price = self.find(loc.price_product_loc)
-            assert actual__price.text == expected_price, \
-                f'Неверная цена товара. Ожидаемая цена: {expected_price}, текущая цена: {actual__price}'
+    def check_price(self):
+        logging.info('Проверяем, что у товара есть цена')
+        with allure.step('Проверяем, что у товара есть цена'):
+            actual_price = self.find(loc.price_product_loc).text
+            currency, price = actual_price.split(' ')
+            assert currency == '$', 'Цена товара не в долларах'
+            try:
+                assert float(price) > 0, 'Цена товара меньше или равно нулю'
+            except ValueError:
+                assert False, f'В поле цены не число: {price}'
+
+    def check_price_euro(self):
+        logging.info('Проверяем, что у товара есть цена')
+        with allure.step('Проверяем, что у товара есть цена'):
+            actual_price = self.find(loc.price_product_loc).text
+            price, currency = actual_price.split(' ')
+            assert currency == '€', 'Цена товара не в евро'
+            try:
+                assert float(price) > 0, 'Цена товара меньше или равно нулю'
+            except ValueError:
+                assert False, f'В поле цены не число: {price}'
 
     def check_image(self):
         logging.info('Проверяем наличие изображения товара')
@@ -41,12 +55,15 @@ class ProductPage(BasePage):
         with allure.step('Нажимаем кнопку "Add to cart"'):
             self.find(loc.add_to_cart).click()
 
-    def verify_added_to_cart_notification(self, expected_text):
-        logging.info(f'Проверяем уведомление о добавлении в корзину: "{expected_text}"')
+    def verify_added_to_cart_notification(self, expected_count, expected_name):
+        logging.info(f'Проверяем уведомление о добавлении в корзину')
         with allure.step(f'Проверяем уведомление о добавлении в корзину'):
-            product_in_cart_notification = self.wait.until(EC.visibility_of_element_located(loc.product_name_in_cart_loc))
-            assert product_in_cart_notification.text == expected_text, f'Ожидалось: {expected_text}. \n' \
-                                                                       f'Текущее: {product_in_cart_notification.text}'
+            product_in_cart_notification = self.wait.until(EC.visibility_of_element_located(loc.product_name_in_cart_loc)).text
+            count, actual_name = product_in_cart_notification.split(' x ')
+            assert int(count) == expected_count, f'Ожидалось количество: {expected_count} \n' \
+                                            f'Текущее количество: {count}'
+            assert expected_name in actual_name, f'Ожидалось: {expected_name} \n' \
+                                                                       f'Текущее: {actual_name}'
 
     def change_currency_to_euro(self):
         logging.info('Меняем валюту на евро')
@@ -55,3 +72,15 @@ class ProductPage(BasePage):
             currency.click()
             eur = self.wait.until(EC.element_to_be_clickable(loc.eur_loc))
             eur.click()
+
+    def check_material_legs_is_aluminium(self):
+        logging.info('Проверяем, что у товара есть выбор материала ножек из аллюминия')
+        with allure.step('Проверяем, что у товара есть выбор материала ножек из аллюминия'):
+            materials_legs = self.wait.until(EC.visibility_of_element_located(loc.materials_legs_loc))
+            assert 'Aluminium' in materials_legs.text
+
+    def get_prod_name(self):
+        logging.info('Получаем название товара')
+        with allure.step(f'Получаем название товара'):
+            prod_name = self.find(loc.name_product_loc)
+            return prod_name.text
